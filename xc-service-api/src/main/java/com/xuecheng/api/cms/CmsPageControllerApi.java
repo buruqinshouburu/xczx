@@ -9,7 +9,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
-@Api(value = "cms页面管理接口",description = "页面管理的增删改查")
+@Api(value = "CMS页面管理接口",description = "页面管理的增删改查")
 public interface CmsPageControllerApi {
     @ApiOperation("分页查询页面列表")
     @ApiImplicitParams({
