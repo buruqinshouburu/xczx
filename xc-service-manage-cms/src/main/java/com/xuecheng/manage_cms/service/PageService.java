@@ -1,6 +1,7 @@
 package com.xuecheng.manage_cms.service;
 
 
+import com.alibaba.fastjson.JSON;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSDownloadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
@@ -14,6 +15,8 @@ import com.xuecheng.framework.exception.ExceptionCast;
 import com.xuecheng.framework.model.response.CommonCode;
 import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.QueryResult;
+import com.xuecheng.framework.model.response.ResponseResult;
+import com.xuecheng.manage_cms.config.RabbitMqConfig;
 import com.xuecheng.manage_cms.dao.CmsPageRepository;
 import com.xuecheng.manage_cms.dao.CmsSiteRepository;
 import com.xuecheng.manage_cms.dao.CmsTemplateRepository;
@@ -22,6 +25,8 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.bson.types.ObjectId;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -34,6 +39,8 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,6 +59,8 @@ public class PageService {
     private GridFSBucket gridFSBucket;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
 
     /**
@@ -273,4 +282,47 @@ public class PageService {
         Map body = forEntity.getBody();
         return body;
     }
+
+    /**
+     * 保存静态化页面，并发布消息
+     * @param pageId
+     * @return
+     */
+    public ResponseResult saveHtmlPage(String pageId){
+        Optional<CmsPage> optional = cmsPageRepository.findById(pageId);
+        if(!optional.isPresent()) ExceptionCast.cast(CommonCode.INVALID_PARAM);
+        CmsPage cmsPage = optional.get();
+        //页面静态化
+        String pageHtml = this.getPageHtml(pageId);
+        //将页面保存到GridFS中
+        saveHtml(cmsPage, pageHtml);
+        //发布消息
+        sendMessage(cmsPage);
+        //返回结果
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    private void sendMessage(CmsPage cmsPage) {
+        Map<String,String> msg=new HashMap<>();
+        msg.put("pageId",cmsPage.getPageId());
+        String s = JSON.toJSONString(msg);
+        rabbitTemplate.convertAndSend(RabbitMqConfig.EX_ROUTING_CMS_POSTPAGE,cmsPage.getSiteId(),s);
+    }
+
+    private void saveHtml(CmsPage cmsPage, String pageHtml) {
+        String htmlFileId = cmsPage.getHtmlFileId();
+        if(StringUtils.isNotEmpty(htmlFileId)){
+            gridFsTemplate.delete(Query.query(Criteria.where("_id").is(htmlFileId)));
+        }
+        try {
+            InputStream inputStream = IOUtils.toInputStream(pageHtml, "utf-8");
+            ObjectId objectId = gridFsTemplate.store(inputStream, "测试轮播图页面");
+            String filedId = objectId.toString();
+            cmsPage.setHtmlFileId(filedId);
+            cmsPageRepository.save(cmsPage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
