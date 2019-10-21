@@ -316,7 +316,7 @@ public class PageService {
         }
         try {
             InputStream inputStream = IOUtils.toInputStream(pageHtml, "utf-8");
-            ObjectId objectId = gridFsTemplate.store(inputStream, "测试轮播图页面");
+            ObjectId objectId = gridFsTemplate.store(inputStream, cmsPage.getPageName());
             String filedId = objectId.toString();
             cmsPage.setHtmlFileId(filedId);
             cmsPageRepository.save(cmsPage);

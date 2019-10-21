@@ -1,19 +1,23 @@
 package com.xuecheng.manage_course.service;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.xuecheng.framework.domain.course.CourseBase;
 import com.xuecheng.framework.domain.course.Teachplan;
+import com.xuecheng.framework.domain.course.ext.CourseInfo;
 import com.xuecheng.framework.domain.course.ext.TeachplanNode;
+import com.xuecheng.framework.domain.course.request.CourseListRequest;
 import com.xuecheng.framework.exception.ExceptionCast;
 import com.xuecheng.framework.model.response.CommonCode;
 import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.QueryResult;
 import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.manage_course.dao.CourseBaseRepository;
+import com.xuecheng.manage_course.dao.CourseMapper;
 import com.xuecheng.manage_course.dao.TeachplanMapper;
 import com.xuecheng.manage_course.dao.TeachplanRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,26 +35,12 @@ public class TeachplanService {
     @Autowired
     private TeachplanRepository teachplanRepository;
 
+
     public TeachplanNode selectList(String id){
         TeachplanNode teachplanNode = teachplanMapper.selectList(id);
         return teachplanNode;
     }
 
-    public QueryResponseResult findCourseList(int page, int size) {
-        if(page<=0){
-            page=1;
-        }
-        page--;
-        if(size<=0){
-            size=10;
-        }
-        Pageable pageable= PageRequest.of(page,size);
-        Page<CourseBase> basePage = courseBaseRepository.findAll(pageable);
-        QueryResult<CourseBase>queryResult= new QueryResult<>();
-        queryResult.setTotal(basePage.getTotalElements());
-        queryResult.setList(basePage.getContent());
-        return new QueryResponseResult(CommonCode.SUCCESS,queryResult);
-    }
     @Transactional
     public ResponseResult add(Teachplan teachplan) {
         if(teachplan==null ||StringUtils.isEmpty(teachplan.getCourseid())||StringUtils.isEmpty(teachplan.getPname())){
@@ -74,7 +64,7 @@ public class TeachplanService {
     }
 
     private String getTeachplan(Teachplan teachplan, String courseid) {
-        List<Teachplan> byCourseidAndGrade = teachplanRepository.findByCourseidAndGrade(courseid, "0");
+        List<Teachplan> byCourseidAndGrade = teachplanRepository.findByCourseidAndParentid(courseid, "0");
         if(byCourseidAndGrade==null||byCourseidAndGrade.size()==0){
           //该节点为根节点,自动创建根节点
             Optional<CourseBase> baseOptional = courseBaseRepository.findById(courseid);
@@ -87,7 +77,7 @@ public class TeachplanService {
            teachplanroot.setParentid("0");
            teachplanroot.setPname(baseOptional.get().getName());
            teachplanroot.setOrderby(teachplan.getOrderby());
-           teachplanroot.setStatus(teachplan.getStatus());
+           teachplanroot.setStatus("0");
            teachplanroot.setPtype(teachplan.getPtype());
            teachplanRepository.save(teachplanroot);
            return teachplanroot.getId();

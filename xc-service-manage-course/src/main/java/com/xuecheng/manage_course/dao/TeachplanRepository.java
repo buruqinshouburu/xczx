@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface TeachplanRepository extends JpaRepository<Teachplan,String> {
 
 
-    List<Teachplan> findByCourseidAndGrade(String courseid, String s);
+    List<Teachplan> findByCourseidAndParentid(String courseid, String s);
 
     Optional<Teachplan> findByCourseid(String courseid);
 }
