@@ -1,6 +1,7 @@
 package com.xuecheng.manage_course.controller;
 
 import com.xuecheng.api.course.CourseControllerApi;
+import com.xuecheng.framework.domain.course.CourseBase;
 import com.xuecheng.framework.domain.course.Teachplan;
 import com.xuecheng.framework.domain.course.ext.TeachplanNode;
 import com.xuecheng.framework.domain.course.request.CourseListRequest;
@@ -36,5 +37,23 @@ public class CourseController implements CourseControllerApi {
     public ResponseResult add(@RequestBody Teachplan teachplan) {
         System.out.println(teachplan);
         return teachplanService.add(teachplan);
+    }
+
+    @Override
+    @PostMapping("/coursebase/add")
+    public ResponseResult addCourse(@RequestBody CourseBase courseBase) {
+        return courseService.addCourse(courseBase);
+    }
+
+    @Override
+    @GetMapping("/courseview/{courseId}")
+    public CourseBase findCourseView(@PathVariable("courseId") String courseId) {
+        return courseService.findCourseView(courseId);
+    }
+
+    @Override
+    @PostMapping("/update/{id}")
+    public ResponseResult updateCoursebase(@PathVariable("id") String id, @RequestBody CourseBase courseBase) {
+        return courseService.update(id,courseBase);
     }
 }
