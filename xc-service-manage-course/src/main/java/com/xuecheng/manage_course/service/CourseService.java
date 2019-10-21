@@ -3,6 +3,7 @@ package com.xuecheng.manage_course.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.xuecheng.framework.domain.course.CourseBase;
+import com.xuecheng.framework.domain.course.CourseMarket;
 import com.xuecheng.framework.domain.course.ext.CourseInfo;
 import com.xuecheng.framework.domain.course.request.CourseListRequest;
 import com.xuecheng.framework.exception.ExceptionCast;
@@ -12,6 +13,7 @@ import com.xuecheng.framework.model.response.QueryResult;
 import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.manage_course.dao.CourseBaseRepository;
 import com.xuecheng.manage_course.dao.CourseMapper;
+import com.xuecheng.manage_course.dao.CourseMarketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ public class CourseService {
     private CourseMapper courseMapper;
     @Autowired
     private CourseBaseRepository courseBaseRepository;
+    @Autowired
+    private CourseMarketRepository courseMarketRepository;
 
     public QueryResponseResult findCourseList(int page, int size, CourseListRequest courseListRequest) {
         if(courseListRequest==null){
@@ -68,6 +72,35 @@ public class CourseService {
         save.setStudymodel(courseBase.getStudymodel());
         save.setDescription(courseBase.getDescription());
         courseBaseRepository.save(save);
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    public CourseMarket getCourseMarketById(String id) {
+        Optional<CourseMarket> optional = courseMarketRepository.findById(id);
+        if(optional.isPresent()){
+          return optional.get();
+        }
+        return null;
+    }
+
+    public ResponseResult updateCourseMarket(String id, CourseMarket courseMarket) {
+        //通过id查找course_market表
+        Optional<CourseMarket> optional = courseMarketRepository.findById(id);
+        if(optional.isPresent()){
+            //原本存在信息，进行修改操作
+            CourseMarket courseMarketSave = optional.get();
+            courseMarketSave.setPrice_old(courseMarketSave.getPrice());
+            courseMarketSave.setPrice(courseMarket.getPrice());
+            courseMarketSave.setStartTime(courseMarket.getStartTime());
+            courseMarketSave.setEndTime(courseMarketSave.getEndTime());
+            courseMarketSave.setCharge(courseMarket.getCharge());
+            courseMarketSave.setValid(courseMarket.getValid());
+            courseMarketSave.setQq(courseMarket.getQq());
+            courseMarketRepository.save(courseMarketSave);
+            return new ResponseResult(CommonCode.SUCCESS);
+        }
+        //不存在信息，直接添加
+        courseMarketRepository.save(courseMarket);
         return new ResponseResult(CommonCode.SUCCESS);
     }
 }
