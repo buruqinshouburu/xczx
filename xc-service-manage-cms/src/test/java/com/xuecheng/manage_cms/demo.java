@@ -97,6 +97,7 @@ public class demo {
     public void test06(){
         gridFsTemplate.delete(Query.query(Criteria.where("_id").is(fileId)));
     }
+    
     @Test
     public void test07(){
         String pageHtml = pageService.getPageHtml("5a795ac7dd573c04508f3a56");

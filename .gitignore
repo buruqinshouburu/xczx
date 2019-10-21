@@ -24,3 +24,5 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+.idea/workspace.xml
+xc-service-manage-cms/src/main/java/com/xuecheng/manage_cms/config/
