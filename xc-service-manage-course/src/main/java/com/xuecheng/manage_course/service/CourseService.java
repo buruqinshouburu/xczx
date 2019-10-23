@@ -4,8 +4,10 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.xuecheng.framework.domain.course.CourseBase;
 import com.xuecheng.framework.domain.course.CourseMarket;
+import com.xuecheng.framework.domain.course.CoursePic;
 import com.xuecheng.framework.domain.course.ext.CourseInfo;
 import com.xuecheng.framework.domain.course.request.CourseListRequest;
+import com.xuecheng.framework.domain.course.response.CourseCode;
 import com.xuecheng.framework.exception.ExceptionCast;
 import com.xuecheng.framework.model.response.CommonCode;
 import com.xuecheng.framework.model.response.QueryResponseResult;
@@ -14,6 +16,7 @@ import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.manage_course.dao.CourseBaseRepository;
 import com.xuecheng.manage_course.dao.CourseMapper;
 import com.xuecheng.manage_course.dao.CourseMarketRepository;
+import com.xuecheng.manage_course.dao.CoursePicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,8 @@ public class CourseService {
     private CourseBaseRepository courseBaseRepository;
     @Autowired
     private CourseMarketRepository courseMarketRepository;
+    @Autowired
+    private CoursePicRepository coursePicRepository;
 
     public QueryResponseResult findCourseList(int page, int size, CourseListRequest courseListRequest) {
         if(courseListRequest==null){
@@ -82,7 +87,7 @@ public class CourseService {
         }
         return null;
     }
-
+    @Transactional
     public ResponseResult updateCourseMarket(String id, CourseMarket courseMarket) {
         //通过id查找course_market表
         Optional<CourseMarket> optional = courseMarketRepository.findById(id);
@@ -102,5 +107,28 @@ public class CourseService {
         //不存在信息，直接添加
         courseMarketRepository.save(courseMarket);
         return new ResponseResult(CommonCode.SUCCESS);
+    }
+    @Transactional
+    public ResponseResult addCoursePic(String courseid, String pic) {
+        CoursePic save = coursePicRepository.findByPic(pic);
+        if(save==null){
+            CoursePic coursePic = new CoursePic();
+            coursePic.setPic(pic);
+            coursePic.setCourseid(courseid);
+            coursePicRepository.save(coursePic);
+        }
+        return new ResponseResult(CommonCode.SUCCESS);
+    }
+
+    public CoursePic findCoursePicList(String courseid) {
+        return coursePicRepository.findById(courseid).get();
+    }
+    @Transactional
+    public ResponseResult deleteCoursePic(String courseid) {
+        Long result = coursePicRepository.deleteByCourseid(courseid);
+        if(result>0){
+            return new ResponseResult(CommonCode.SUCCESS);
+        }
+        return new ResponseResult(CommonCode.FAIL);
     }
 }

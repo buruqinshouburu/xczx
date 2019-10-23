@@ -7,17 +7,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="test-fastdfs" />
         <module name="testfreemarker" />
         <module name="xc-framework-common" />
         <module name="xc-framework-model" />
         <module name="xc-framework-utils" />
         <module name="xc-service-api" />
+        <module name="xc-service-base-filesystem" />
         <module name="xc-service-manage-cms" />
         <module name="xc-service-manage-cms-client" />
         <module name="xc-service-manage-course" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="test-fastdfs" target="1.8" />
       <module name="test-rabbitmq-consumer" target="1.8" />
       <module name="test-rabbitmq-producter" target="1.8" />
       <module name="testfreemarker" target="1.8" />
@@ -26,6 +29,7 @@
       <module name="xc-framework-parent" target="1.8" />
       <module name="xc-framework-utils" target="1.8" />
       <module name="xc-service-api" target="1.8" />
+      <module name="xc-service-base-filesystem" target="1.8" />
       <module name="xc-service-manage-cms" target="1.8" />
       <module name="xc-service-manage-cms-client" target="1.8" />
       <module name="xc-service-manage-course" target="1.8" />
@@ -33,6 +37,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="test-fastdfs" options="-parameters" />
       <module name="test-rabbitmq-consumer" options="-parameters" />
       <module name="test-rabbitmq-producter" options="-parameters" />
       <module name="testfreemarker" options="-parameters" />
@@ -40,6 +45,7 @@
       <module name="xc-framework-model" options="-parameters" />
       <module name="xc-framework-utils" options="-parameters" />
       <module name="xc-service-api" options="-parameters" />
+      <module name="xc-service-base-filesystem" options="-parameters" />
       <module name="xc-service-manage-cms" options="-parameters" />
       <module name="xc-service-manage-cms-client" options="-parameters" />
       <module name="xc-service-manage-course" options="-parameters" />
