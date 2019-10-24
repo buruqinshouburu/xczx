@@ -110,12 +110,17 @@ public class CourseService {
     }
     @Transactional
     public ResponseResult addCoursePic(String courseid, String pic) {
-        CoursePic save = coursePicRepository.findByPic(pic);
-        if(save==null){
+        Optional<CoursePic> optional = coursePicRepository.findById(courseid);
+        if(!optional.isPresent()){
             CoursePic coursePic = new CoursePic();
             coursePic.setPic(pic);
             coursePic.setCourseid(courseid);
             coursePicRepository.save(coursePic);
+        }else {
+            CoursePic coursePic = optional.get();
+            //删除dfs图片
+            //.............
+            coursePic.setPic(pic);
         }
         return new ResponseResult(CommonCode.SUCCESS);
     }
