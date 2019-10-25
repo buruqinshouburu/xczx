@@ -38,7 +38,7 @@ public class demo {
     GridFSBucket gridFSBucket;
     @Autowired
     PageService pageService;
-    static String fileId="5da87a7462aa4d6264ac7762";
+    static String fileId="5db2af6b62aa4d054c789de7";
     @Test
     public void test01(){
         List<CmsPage> all = cmsPageRepository.findAll();
@@ -62,11 +62,11 @@ public class demo {
     @Test
     public void test04() throws FileNotFoundException {
         //要存储的文件
-        File file=new File("F:\\java\\xczx\\testfreemarker\\src\\main\\resources\\templates\\index_banner.ftl");
+        File file=new File("F:\\黑马\\project\\19 微服务项目【学成在线】\\day09 课程预览 Eureka Feign\\资料\\课程详情页面模板\\course.ftl");
         //定义输入流
         FileInputStream fileInputStream=new FileInputStream(file);
         //向GridFS存储文件
-        ObjectId objectId = gridFsTemplate.store(fileInputStream, "轮播图测试文件01", "");
+        ObjectId objectId = gridFsTemplate.store(fileInputStream, "课程详情页面", "");
         //得到文件ID
         String s = objectId.toString();
         System.out.println(s);

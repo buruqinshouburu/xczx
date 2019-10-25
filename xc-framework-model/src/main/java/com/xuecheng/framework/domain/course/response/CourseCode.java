@@ -17,7 +17,11 @@ public enum CourseCode implements ResultCode {
     COURSE_PUBLISH_COURSEIDISNULL(false,31004,"课程Id为空！"),
     COURSE_PUBLISH_VIEWERROR(false,31005,"发布课程视图出错！"),
     COURSE_MEDIS_URLISNULL(false,31101,"选择的媒资文件访问地址为空！"),
-    COURSE_MEDIS_NAMEISNULL(false,31102,"选择的媒资文件名称为空！");
+    COURSE_MEDIS_NAMEISNULL(false,31102,"选择的媒资文件名称为空！"),
+    COURSE_CORSEBASE_ISNULL(false,31104,"课程基本信息不存在!"),
+    COURSE_CORSEPIC_ISNULL(false,31105,"课程图片信息不存在!"),
+    COURSE_CORSEMARKET_ISNULL(false,31106,"课程营销信息不存在!"),
+    COURSE_TEACHPLANNODE_ISNULL(false,31107,"教学信息信息不存在!");
 
     //操作代码
     @ApiModelProperty(value = "操作是否成功", example = "true", required = true)

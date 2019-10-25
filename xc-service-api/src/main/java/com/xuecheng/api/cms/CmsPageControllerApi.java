@@ -21,10 +21,13 @@ public interface CmsPageControllerApi {
     public QueryResponseResult findList(int size,int page,QueryPageRequest queryPageRequest);
     public QueryResponseResult findSiteName();
     public QueryResponseResult findtemplateName();
-    public QueryResponseResult add(CmsPage cmsPage);
+    public CmsPageResult add(CmsPage cmsPage);
     public CmsPageResult findCmsPageById(String id);
-    public QueryResponseResult edit(CmsPage cmsPage);
+    public CmsPageResult edit(CmsPage cmsPage);
     public QueryResponseResult del(String id);
     @ApiOperation("发布页面")
     public ResponseResult post(String pageId);
+    @ApiOperation("意见发布课程页面")
+    public CmsPageResult postPageQuick(CmsPage cmsPage);
+    public CmsPageResult addCmsPage( CmsPage cmsPage);
 }

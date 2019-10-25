@@ -1,12 +1,15 @@
 package com.xuecheng.manage_course.controller;
 
 import com.xuecheng.api.course.CourseControllerApi;
+import com.xuecheng.framework.domain.cms.response.CoursePreviewResult;
 import com.xuecheng.framework.domain.course.CourseBase;
 import com.xuecheng.framework.domain.course.CourseMarket;
 import com.xuecheng.framework.domain.course.CoursePic;
 import com.xuecheng.framework.domain.course.Teachplan;
 import com.xuecheng.framework.domain.course.ext.TeachplanNode;
 import com.xuecheng.framework.domain.course.request.CourseListRequest;
+import com.xuecheng.framework.domain.course.response.CourseResult;
+import com.xuecheng.framework.domain.portalview.PreViewCourse;
 import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.manage_course.service.CourseService;
@@ -87,4 +90,23 @@ public class CourseController implements CourseControllerApi {
     public ResponseResult deleteCoursePic(@RequestParam("courseId") String courseid) {
         return courseService.deleteCoursePic(courseid);
     }
+
+    @Override
+    @GetMapping("/courseView/{id}")
+    public PreViewCourse getCourseView(@PathVariable("id") String courseid) {
+        return courseService.getCourseView(courseid);
+    }
+
+    @Override
+    @GetMapping("/preview/{id}")
+    public CoursePreviewResult addCmsPage(@PathVariable("id") String courseid) {
+        return courseService.addCmsPage(courseid);
+    }
+
+    @Override
+    @GetMapping("/publish/{id}")
+    public CourseResult publish(@PathVariable("id") String courseid) {
+        return courseService.publish(courseid);
+    }
+
 }

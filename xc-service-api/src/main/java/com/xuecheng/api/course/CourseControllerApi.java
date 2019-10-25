@@ -1,11 +1,14 @@
 package com.xuecheng.api.course;
 
+import com.xuecheng.framework.domain.cms.response.CoursePreviewResult;
 import com.xuecheng.framework.domain.course.CourseBase;
 import com.xuecheng.framework.domain.course.CourseMarket;
 import com.xuecheng.framework.domain.course.CoursePic;
 import com.xuecheng.framework.domain.course.Teachplan;
 import com.xuecheng.framework.domain.course.ext.TeachplanNode;
 import com.xuecheng.framework.domain.course.request.CourseListRequest;
+import com.xuecheng.framework.domain.course.response.CourseResult;
+import com.xuecheng.framework.domain.portalview.PreViewCourse;
 import com.xuecheng.framework.model.response.QueryResponseResult;
 import com.xuecheng.framework.model.response.ResponseResult;
 import io.swagger.annotations.Api;
@@ -35,4 +38,11 @@ public interface CourseControllerApi {
     CoursePic findCoursePicList(String courseid);
     @ApiOperation(("删除图片"))
     ResponseResult deleteCoursePic(String courseid);
+    @ApiOperation(("课程视图查询"))
+    PreViewCourse getCourseView(String courseid);
+    @ApiOperation(("添加课程详情页面"))
+    CoursePreviewResult addCmsPage(String courseid);
+    @ApiOperation(("页面发布"))
+    CourseResult publish(String courseid);
+
 }

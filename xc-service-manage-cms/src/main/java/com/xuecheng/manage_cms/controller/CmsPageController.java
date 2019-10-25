@@ -35,7 +35,7 @@ public class CmsPageController implements CmsPageControllerApi {
 
     @Override
     @PostMapping("/add")
-    public QueryResponseResult add(@RequestBody CmsPage cmsPage) {
+    public CmsPageResult add(@RequestBody CmsPage cmsPage) {
         System.out.println(cmsPage);
         return pageService.add(cmsPage);
     }
@@ -48,7 +48,7 @@ public class CmsPageController implements CmsPageControllerApi {
 
     @Override
     @PostMapping("/edit")
-    public QueryResponseResult edit(@RequestBody CmsPage cmsPage) {
+    public CmsPageResult edit(@RequestBody CmsPage cmsPage) {
         return pageService.edit(cmsPage);
     }
 
@@ -64,4 +64,27 @@ public class CmsPageController implements CmsPageControllerApi {
         ResponseResult responseResult = pageService.saveHtmlPage(pageId);
         return responseResult;
     }
+
+    /**
+     * 页面一键发布
+     * @param cmsPage
+     * @return
+     */
+    @Override
+    @PostMapping("/postPageQuick")
+    public CmsPageResult postPageQuick(@RequestBody CmsPage cmsPage) {
+        return pageService.postPageQuick(cmsPage);
+    }
+
+    /**
+     * 添加页面（预览页面效果使用）
+     * @param cmsPage
+     * @return
+     */
+    @Override
+    @PostMapping("/addCmsPage")
+    public CmsPageResult addCmsPage(@RequestBody CmsPage cmsPage){
+        return pageService.addCmsPage(cmsPage);
+    }
+
 }
