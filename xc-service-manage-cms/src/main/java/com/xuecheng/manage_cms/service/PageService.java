@@ -63,6 +63,7 @@ public class PageService {
     RabbitTemplate rabbitTemplate;
 
 
+
     /**
      * 分页查找所有cmsPage
      * @param size
@@ -132,7 +133,7 @@ public class PageService {
      * @param cmsPage
      * @return
      */
-    public QueryResponseResult add(CmsPage cmsPage) {
+    public CmsPageResult add(CmsPage cmsPage) {
         CmsPage repository = cmsPageRepository.findByPageNameAndSiteIdAndPageWebPath(cmsPage.getPageName(), cmsPage.getSiteId(), cmsPage.getPageWebPath());
         if(repository!=null){
             ExceptionCast.cast(CmsCode.CMS_ADDPAGE_EXISTSNAME);
@@ -141,9 +142,10 @@ public class PageService {
             CmsPage cmsPageSave=new CmsPage();
             getCmsPage(cmsPage,cmsPageSave);
             cmsPageRepository.save(cmsPageSave);
-            return new QueryResponseResult(CommonCode.SUCCESS,null);
+
+            return new CmsPageResult(CommonCode.SUCCESS,cmsPageSave);
         }
-        return new QueryResponseResult(CommonCode.FAIL,null);
+        return new CmsPageResult(CommonCode.FAIL,null);
     }
 
     private void getCmsPage(CmsPage cmsPage,CmsPage cmsPageSave) {
@@ -177,17 +179,17 @@ public class PageService {
      * @param cmsPage
      * @return
      */
-    public QueryResponseResult edit(CmsPage cmsPage) {
+    public CmsPageResult edit(CmsPage cmsPage) {
         CmsPageResult cmsPageResult = findCmsPageById(cmsPage.getPageId());
         CmsPage cmsPagesave = cmsPageResult.getCmsPage();
         if(cmsPagesave!=null){
              getCmsPage(cmsPage,cmsPagesave);
             CmsPage save = cmsPageRepository.save(cmsPagesave);
             if(save!=null){
-                return new QueryResponseResult(CommonCode.SUCCESS,null);
+                return new CmsPageResult(CommonCode.SUCCESS,save);
             }
         }
-        return new QueryResponseResult(CommonCode.FAIL,null);
+        return new CmsPageResult(CommonCode.FAIL,null);
     }
 
     /**
@@ -324,5 +326,37 @@ public class PageService {
             e.printStackTrace();
         }
     }
+    public CmsPageResult addCmsPage(CmsPage cmsPage) {
 
+            CmsPage repository = cmsPageRepository.findByPageNameAndSiteIdAndPageWebPath(cmsPage.getPageName(), cmsPage.getSiteId(), cmsPage.getPageWebPath());
+            if(repository!=null){
+                cmsPage.setPageId(repository.getPageId());
+                CmsPageResult edit = this.edit(cmsPage);
+                return edit;
+            }else {
+                CmsPage cmsPageSave=new CmsPage();
+                getCmsPage(cmsPage,cmsPageSave);
+                CmsPage save = cmsPageRepository.save(cmsPageSave);
+                System.out.println(save);
+                return new CmsPageResult(CommonCode.SUCCESS,save);
+            }
+
+    }
+
+    /**
+     * 页面一键发布
+     * @param cmsPage
+     * @return
+     */
+    public CmsPageResult postPageQuick(CmsPage cmsPage) {
+        //将cmsPage信息保存
+        CmsPageResult cmsPageResult = this.addCmsPage(cmsPage);
+        CmsPage RCmsPage= cmsPageResult.getCmsPage();
+        String pageId = RCmsPage.getPageId();
+        if(StringUtils.isEmpty(pageId)) ExceptionCast.cast(CommonCode.INVALID_PARAM);
+        //保存静态化页面，并发布消息
+        ResponseResult responseResult = this.saveHtmlPage(pageId);
+        if(!responseResult.isSuccess()) ExceptionCast.cast(CmsCode.CMS_GENERATEHTML_PUBLISHfAIL);
+        return new CmsPageResult(CommonCode.SUCCESS,RCmsPage);
+    }
 }
