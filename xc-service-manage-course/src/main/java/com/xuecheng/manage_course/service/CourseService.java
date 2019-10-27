@@ -2,15 +2,10 @@ package com.xuecheng.manage_course.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.sun.org.apache.regexp.internal.RE;
 import com.xuecheng.framework.domain.cms.CmsPage;
-import com.xuecheng.framework.domain.cms.response.CmsCode;
 import com.xuecheng.framework.domain.cms.response.CmsPageResult;
 import com.xuecheng.framework.domain.cms.response.CoursePreviewResult;
-import com.xuecheng.framework.domain.course.CourseBase;
-import com.xuecheng.framework.domain.course.CourseMarket;
-import com.xuecheng.framework.domain.course.CoursePic;
-import com.xuecheng.framework.domain.course.CourseView;
+import com.xuecheng.framework.domain.course.*;
 import com.xuecheng.framework.domain.course.ext.CourseInfo;
 import com.xuecheng.framework.domain.course.ext.TeachplanNode;
 import com.xuecheng.framework.domain.course.request.CourseListRequest;
@@ -25,11 +20,14 @@ import com.xuecheng.framework.model.response.ResponseResult;
 import com.xuecheng.manage_course.Client.CmsPageClient;
 import com.xuecheng.manage_course.dao.*;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -39,6 +37,8 @@ public class CourseService {
     @Autowired
     private CourseBaseRepository courseBaseRepository;
     @Autowired
+    private CoursePubRepository coursePubRepository;
+    @Autowired
     private CourseMarketRepository courseMarketRepository;
     @Autowired
     private CoursePicRepository coursePicRepository;
@@ -46,6 +46,8 @@ public class CourseService {
     private TeachplanMapper teachplanMapper;
     @Autowired
     private CmsPageClient cmsPageClient;
+    @Autowired
+    private TeachplanRepository teachplanRepository;
     @Value("${course-publish.siteId}")
     private String siteId;
     @Value("${course-publish.templateId}")
@@ -221,7 +223,51 @@ public class CourseService {
         }
         courseBase.setStatus("202002");
         CourseBase save = courseBaseRepository.save(courseBase);
+        //创建课程索引
+        CoursePub coursePub = new CoursePub();
+        Optional<CoursePub> coursePubOptional = coursePubRepository.findById(courseid);
+        if(coursePubOptional.isPresent()){
+            coursePub = coursePubOptional.get();
+        }
+        //创建课程索引信息
+        CoursePub createCoursePub = CreateCoursePub(courseid, coursePub);
+        //向数据库保存课程索引信息
+        if(coursePub==null)ExceptionCast.cast(CourseCode.COURSE_CORSEBASE_ISNULL);
+        saveCoursePub(coursePub);
         return new CourseResult(CommonCode.SUCCESS,save);
+    }
+
+    private void saveCoursePub(CoursePub coursePub) {
+        coursePub.setTimestamp(new Date());
+        SimpleDateFormat simpleDateFormat =new SimpleDateFormat("YYYY‐MM‐dd HH:mm:ss");
+        String date=simpleDateFormat.format(new Date());
+        coursePub.setPubTime(date);
+        coursePubRepository.save(coursePub);
+    }
+
+    private CoursePub CreateCoursePub(String courseid, CoursePub coursePub) {
+        coursePub.setId(courseid);
+        Optional<CourseBase> courseBaseOptional = courseBaseRepository.findById(courseid);
+        if(courseBaseOptional.isPresent()){
+            CourseBase courseBase = courseBaseOptional.get();
+            BeanUtils.copyProperties(courseBase,coursePub);
+        }
+        Optional<CoursePic> coursePicOptional = coursePicRepository.findById(courseid);
+        if(coursePicOptional.isPresent()){
+            CoursePic coursePic = coursePicOptional.get();
+            BeanUtils.copyProperties(coursePic,coursePub);
+        }
+        Optional<CourseMarket> courseMarketOptional = courseMarketRepository.findById(courseid);
+        if(courseMarketOptional.isPresent()){
+            CourseMarket courseMarket = courseMarketOptional.get();
+            BeanUtils.copyProperties(courseMarket,coursePub);
+        }
+        Optional<Teachplan> teachplanOptional = teachplanRepository.findById(courseid);
+        if(teachplanOptional.isPresent()){
+            Teachplan teachplan = teachplanOptional.get();
+            BeanUtils.copyProperties(teachplan,coursePub);
+        }
+        return coursePub;
     }
 
     private CmsPage createCmsPage(String courseid,String name) {

@@ -21,6 +21,7 @@ public enum CourseCode implements ResultCode {
     COURSE_CORSEBASE_ISNULL(false,31104,"课程基本信息不存在!"),
     COURSE_CORSEPIC_ISNULL(false,31105,"课程图片信息不存在!"),
     COURSE_CORSEMARKET_ISNULL(false,31106,"课程营销信息不存在!"),
+    COURSE_COURSEPUB_ISNULL(false,31106,"课程信息不存在!"),
     COURSE_TEACHPLANNODE_ISNULL(false,31107,"教学信息信息不存在!");
 
     //操作代码
