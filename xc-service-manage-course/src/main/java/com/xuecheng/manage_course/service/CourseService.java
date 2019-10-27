@@ -165,6 +165,7 @@ public class CourseService {
      * @param courseid
      * @return
      */
+    @Transactional
     public PreViewCourse getCourseView(String courseid) {
        PreViewCourse preViewCourse=new PreViewCourse();
        //查询 courseBase;
@@ -190,6 +191,7 @@ public class CourseService {
      * @param courseid
      * @return
      */
+    @Transactional
     public CoursePreviewResult addCmsPage(String courseid) {
         Optional<CourseBase> courseBaseOptional = courseBaseRepository.findById(courseid);
         if(!courseBaseOptional.isPresent()) ExceptionCast.cast(CommonCode.INVALID_PARAM);
@@ -213,6 +215,7 @@ public class CourseService {
      * @param courseid
      * @return
      */
+    @Transactional
     public CourseResult publish(String courseid) {
         Optional<CourseBase> courseBaseOptional = courseBaseRepository.findById(courseid);
         if(!courseBaseOptional.isPresent()) ExceptionCast.cast(CommonCode.INVALID_PARAM);
