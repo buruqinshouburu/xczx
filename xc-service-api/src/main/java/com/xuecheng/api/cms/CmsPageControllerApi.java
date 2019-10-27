@@ -27,7 +27,7 @@ public interface CmsPageControllerApi {
     public QueryResponseResult del(String id);
     @ApiOperation("发布页面")
     public ResponseResult post(String pageId);
-    @ApiOperation("意见发布课程页面")
+    @ApiOperation("一键发布课程页面")
     public CmsPageResult postPageQuick(CmsPage cmsPage);
     public CmsPageResult addCmsPage( CmsPage cmsPage);
 }

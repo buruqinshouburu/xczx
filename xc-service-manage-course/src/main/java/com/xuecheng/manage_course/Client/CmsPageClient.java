@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface CmsPageClient {
     @GetMapping("/cms/pages/list/{id}")
     public CmsPageResult findCmsPageById(@PathVariable("id") String id);
-  /*  @GetMapping("/cms/preview/{pageId}")
-    public void preview(@PathVariable("pageId")String pageId);*/
     @PostMapping("/cms/pages/addCmsPage")
     public CmsPageResult addCmsPage(CmsPage cmsPage);
     @PostMapping("/cms/pages/postPageQuick")

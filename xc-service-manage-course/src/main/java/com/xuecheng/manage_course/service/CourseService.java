@@ -135,12 +135,17 @@ public class CourseService {
     }
     @Transactional
     public ResponseResult addCoursePic(String courseid, String pic) {
-        CoursePic save = coursePicRepository.findByPic(pic);
-        if(save==null){
+        Optional<CoursePic> optional = coursePicRepository.findById(courseid);
+        if(!optional.isPresent()){
             CoursePic coursePic = new CoursePic();
             coursePic.setPic(pic);
             coursePic.setCourseid(courseid);
             coursePicRepository.save(coursePic);
+        }else {
+            CoursePic coursePic = optional.get();
+            //删除dfs图片
+            //.............
+            coursePic.setPic(pic);
         }
         return new ResponseResult(CommonCode.SUCCESS);
     }
@@ -162,6 +167,7 @@ public class CourseService {
      * @param courseid
      * @return
      */
+    @Transactional
     public PreViewCourse getCourseView(String courseid) {
        PreViewCourse preViewCourse=new PreViewCourse();
        //查询 courseBase;
@@ -187,6 +193,7 @@ public class CourseService {
      * @param courseid
      * @return
      */
+    @Transactional
     public CoursePreviewResult addCmsPage(String courseid) {
         Optional<CourseBase> courseBaseOptional = courseBaseRepository.findById(courseid);
         if(!courseBaseOptional.isPresent()) ExceptionCast.cast(CommonCode.INVALID_PARAM);
@@ -210,6 +217,7 @@ public class CourseService {
      * @param courseid
      * @return
      */
+    @Transactional
     public CourseResult publish(String courseid) {
         Optional<CourseBase> courseBaseOptional = courseBaseRepository.findById(courseid);
         if(!courseBaseOptional.isPresent()) ExceptionCast.cast(CommonCode.INVALID_PARAM);
