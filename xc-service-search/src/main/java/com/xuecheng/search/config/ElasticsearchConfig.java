@@ -1,4 +1,7 @@
+
 package com.xuecheng.search.config;
+
+
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
@@ -11,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * @author Administrator
  * @version 1.0
  **/
+
 @Configuration
 public class ElasticsearchConfig {
 
@@ -46,3 +50,4 @@ public class ElasticsearchConfig {
     }
 
 }
+
