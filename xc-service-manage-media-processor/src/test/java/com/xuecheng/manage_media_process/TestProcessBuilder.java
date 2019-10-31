@@ -55,13 +55,13 @@ public class TestProcessBuilder {
     public void testProcessMp4(){
         //String ffmpeg_path, String video_path, String mp4_name, String mp4folder_path
         //ffmpeg的路径
-        String ffmpeg_path = "D:\\Program Files\\ffmpeg-20180227-fa0c9d6-win64-static\\bin\\ffmpeg.exe";
+        String ffmpeg_path="D:/ffmpeg-20180227-fa0c9d6-win64-static/bin/ffmpeg.exe ";
         //video_path视频地址
-        String video_path = "E:\\ffmpeg_test\\1.avi";
+        String video_path = "F:/develop/lucene.avi";
         //mp4_name mp4文件名称
         String mp4_name  ="1.mp4";
         //mp4folder_path mp4文件目录路径
-        String mp4folder_path="E:/ffmpeg_test/";
+        String mp4folder_path="F:/develop/";
         Mp4VideoUtil mp4VideoUtil = new Mp4VideoUtil(ffmpeg_path,video_path,mp4_name,mp4folder_path);
         //开始编码,如果成功返回success，否则返回输出的日志
         String result = mp4VideoUtil.generateMp4();
