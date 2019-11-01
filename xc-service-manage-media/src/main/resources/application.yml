@@ -5,7 +5,7 @@ spring:
     name: xc-service-manage-media
   data:
     mongodb:
-      uri:  mongodb://root:123@localhost:27017
+      uri:  mongodb://47.96.143.200:27017
       database: xc_media
 xc-service-manage-media:
   upload-location: F:/develop/video/
