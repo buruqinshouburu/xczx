@@ -7,8 +7,18 @@ spring:
     mongodb:
       uri:  mongodb://47.96.143.200:27017
       database: xc_media
+  rabbitmq:
+    host: 47.96.143.200
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
 xc-service-manage-media:
   upload-location: F:/develop/video/
+  mq:
+    queue-media-video-processor: queue_media_video_processor
+    routingkey-media-video: routingkey_media_video
+  ffmpeg-path: D:/ffmpeg-20180227-fa0c9d6-win64-static/bin/ffmpeg.exe
 eureka:
   client:
     registerWithEureka: true #服务注册开关
