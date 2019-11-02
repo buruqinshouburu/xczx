@@ -76,8 +76,7 @@ public class MediaProcessTask {
         Mp4VideoUtil mp4VideoUtil = new Mp4VideoUtil(ffmpeg_path,video_path,mp4_name,mp4folder_path);
         String s = mp4VideoUtil.generateMp4();
         if(s.equals("success")) {
-            transformMp4(mediaFile);
-            return true;
+            return transformMp4(mediaFile);
         }
         MediaFileProcess_m3u8 mediaFileProcess_m3u8=new MediaFileProcess_m3u8();
         mediaFileProcess_m3u8.setErrormsg(s);
